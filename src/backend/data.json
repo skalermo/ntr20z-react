@@ -16,7 +16,7 @@
     "4a",
     "4b"
   ],
-  "classes": [
+  "subjects": [
     "mat",
     "geo",
     "eng",
@@ -36,14 +36,14 @@
     {
       "room": "110",
       "group": "1a",
-      "class": "mat",
+      "subject": "mat",
       "slot": 1,
       "teacher": "kowalski"
     },
     {
       "room": "121",
       "group": "1c",
-      "class": "eng",
+      "subject": "eng",
       "slot": 3,
       "teacher": "nowak"
     }
