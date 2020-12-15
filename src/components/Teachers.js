@@ -62,7 +62,6 @@ class Teachers extends Component {
             .then(response => {
                 if (response.status === 204)
                     this.setState((state) => (state.teachers.splice(id, 1)))
-                this.state.teachers.splice(id, 1);
             })
             .catch(console.log)
     }
