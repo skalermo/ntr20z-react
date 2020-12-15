@@ -2,10 +2,12 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 
-app.get('/listUsers', function (req, res) {
-    fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
-        console.log(data);
-        res.end(data);
+app.get('/teachers', function (req, res) {
+    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
+        let teachers = JSON.parse(data).teachers;
+        console.log(teachers);
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.send(teachers);
     });
 })
 
