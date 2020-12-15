@@ -5,12 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "firefox",
+            "type": "chrome",
             "request": "launch",
-            "reAttach": true,
+            // "reAttach": true,
             "name": "Client side",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
+            "runtimeExecutable": "/usr/bin/chromium-browser",
+            "runtimeArgs": [
+                "--new-window",
+                "--remote-debugging-port=9222",
+                "--disable-background-networking",
+                "--disable-web-security"
+            ],
             "preLaunchTask": "npm: start",
         },
         {
