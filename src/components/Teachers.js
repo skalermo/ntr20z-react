@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { Link, Route, useParams, useRouteMatch } from "react-router-dom"
 
-const Teacher = ({ name }) => {
+const TeacherEntry = ({ name }) => {
     console.log("checking typeof name: " + typeof (name));
     return (
-        <p>{name}</p>
+        <tr>
+            <td>
+                {name}
+            </td>
+            <td>
+                <button type="submit" name="id" value={name} class="btn btn-link">Edit</button>
+                <button type="submit" name="id" value={name} class="btn btn-link">Delete</button>
+            </td>
+        </tr>
     )
 }
 
@@ -17,10 +24,24 @@ class Teachers extends Component {
         console.log(this.state.teachers)
         return (
             <div>
-                < h2 >
-                    Teachers
-                </h2 >
-                {this.state.teachers.map(teacher => <Teacher name={teacher} />)}
+                <form>
+                    < h2 >
+                        Teachers
+                    </h2 >
+                    <div>
+                        <table class="table table-hover">
+                            <tr>
+                                <th>
+                                    Teacher
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                            {this.state.teachers.map(teacher => <TeacherEntry name={teacher} />)}
+                        </table>
+                    </div>
+                </form>
             </div>
         );
     }
