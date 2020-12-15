@@ -14,16 +14,18 @@ app.get('/teachers', function (req, res) {
     });
 })
 
-app.delete('/deleteTeacher', function (req, res) {
-    let id = req.body.teacherToDelete;
-    let data = require(__dirname + "/" + "data.json");
+app.delete("/teachers/:id", function (req, res) {
+    let id = parseInt(req.params.id, 10);
+    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    data = JSON.parse(data)
 
     data.teachers.splice(id, 1);
     console.log(data.teachers);
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
-        res.send(data.teachers);
+        res.status(204);
+        res.send();
     });
 })
 
