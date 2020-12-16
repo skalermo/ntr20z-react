@@ -67,8 +67,9 @@ app.put('/teachers/:id', function (req, res) {
 app.get('/activities', function (req, res) {
     console.log(`GET /activities ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
-        let teachers = JSON.parse(data).activities;
-        res.send(teachers);
+        let activities = JSON.parse(data).activities;
+        console.log(activities);
+        res.send(activities);
     });
 })
 
