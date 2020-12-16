@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class Teachers extends Component {
     constructor(props) {
@@ -14,22 +15,22 @@ class Teachers extends Component {
             <div>
                 < h2 >
                     Teachers
-                    </h2 >
-                <div>
-                    <table class="table table-hover">
-                        <tr>
-                            <th>
-                                Teacher
+                </h2 >
+                <Link class="btn btn-link" to="/teacherForm">Add new teacher</Link>
+
+                <table class="table table-hover">
+                    <tr>
+                        <th>
+                            Teacher
                                 </th>
-                            <th>
-                                Actions
+                        <th>
+                            Actions
                                 </th>
-                        </tr>
-                        {this.state.teachers.map((teacher, idx) => {
-                            return this.renderTeacherEntry(idx, teacher);
-                        })}
-                    </table>
-                </div>
+                    </tr>
+                    {this.state.teachers.map((teacher, idx) => {
+                        return this.renderTeacherEntry(idx, teacher);
+                    })}
+                </table>
             </div >
         );
     }
@@ -42,8 +43,12 @@ class Teachers extends Component {
                     {name}
                 </td>
                 <td>
-                    <button type="submit" name="editButton" value={idx} class="btn btn-link">Edit</button>
-                    <button type="submit" onClick={() => { this.deleteTeacher(idx) }} name="deleteButton" value={idx} class="btn btn-link">Delete</button>
+                    <Link class="btn btn-link" to={{
+                        pathname: "/teacherForm",
+                        state: { idx, name }
+                    }}>Edit</Link>
+                    {/* <button name="editButton" value={idx} class="btn btn-link">Edit</button> */}
+                    <button onClick={() => { this.deleteTeacher(idx) }} name="deleteButton" value={idx} class="btn btn-link">Delete</button>
                 </td>
             </tr>
         );
