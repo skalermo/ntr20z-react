@@ -1,9 +1,9 @@
-import { NewTeacherForm } from './components/NewTeacherForm'
 
 import React, { Component } from "react";
 import { Link, Route, Switch } from "react-router-dom";
 import Home from "./components/Home";
 import Teachers from "./components/Teachers";
+import TeacherForm from "./components/TeacherForm";
 import Activities from "./components/Activities";
 
 const Header = () => {
@@ -11,9 +11,8 @@ const Header = () => {
     <header>
       <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
-
-          <a class="navbar-brand" href="#">School Scheduler</a>
-          <ul className="nav navbar-nav">
+          <div class="navbar-brand">School Scheduler</div>
+          <ul class="nav navbar-nav">
             <li>
               <Link class="nav-link" to="/">Home</Link>
             </li>
@@ -42,6 +41,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/"><Home /></Route>
               <Route path="/teachers"><Teachers /></Route>
+              <Route path="/teacherForm"><TeacherForm /></Route>
               <Route path="/activities"><Activities /></Route>
               <Route path="/:id">
                 <p>This text will render for any route other than those defined above</p>
