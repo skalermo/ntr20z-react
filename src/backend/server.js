@@ -17,8 +17,8 @@ app.get('/teachers', function (req, res) {
 
 // Delete teacher #id
 app.delete("/teachers/:id", function (req, res) {
-    console.log(`DELETE /teachers/:id ${req.ip}`);
     let id = parseInt(req.params.id, 10);
+    console.log(`DELETE /teachers/${req.params.id} ${req.ip}`);
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data)
 
@@ -51,10 +51,11 @@ app.post('/teachers', function (req, res) {
 
 // Edit existing teacher
 app.put('/teachers/:id', function (req, res) {
-    console.log(`PUT /teachers ${req.ip}`);
+    let id = parseInt(req.params.id, 10);
+    console.log(`PUT /teachers/${id} ${req.ip}`);
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data);
-    data.teachers[req.params.id] = req.body.teacher;
+    data.teachers[id] = req.body.teacher;
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
@@ -62,14 +63,37 @@ app.put('/teachers/:id', function (req, res) {
     });
 })
 
-
-// Retrieves a list of activities
-app.get('/activities', function (req, res) {
-    console.log(`GET /activities ${req.ip}`);
+// Retrieves a list of groups
+app.get('/groups', function (req, res) {
+    console.log(`GET /groups ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
-        let activities = JSON.parse(data).activities;
+        let groups = JSON.parse(data).groups;
+        console.log(groups);
+        res.send(groups);
+    });
+})
+
+// Retrieves list of activities for specific group
+app.get('/groups/:id/activities', function (req, res) {
+    let id = parseInt(req.params.id, 10);
+    console.log(`GET /group/${id}/activities ${req.ip}`);
+    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+        let data = JSON.parse(json);
+        let group = data.groups[id];
+        let activities = data.activities.filter(a => a.group === group);
         console.log(activities);
         res.send(activities);
+    });
+})
+
+// Retrieves a specific activity
+app.get('/activities/:id', function (req, res) {
+    let id = parseInt(req.params.id, 10);
+    console.log(`GET /activities/${id} ${req.ip}`);
+    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
+        let activity = JSON.parse(data).activities[id];
+        console.log(activity);
+        res.send(activity);
     });
 })
 
