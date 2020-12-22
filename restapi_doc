@@ -1,0 +1,42 @@
+GET /teachers - get list of all teachers
+Taken parameters:
+- includeForActivity - for provided activity id include its teacher
+- excludeForSlot - for provided slot exclude all teacher using it
+    Success - 200
+
+DELETE /teachers/:id - delete a specific teacher
+    Success - 204
+
+POST /teachers - add new teacher
+    Success - 201
+
+PUT /teachers/:id - update a specific teacher
+    Success - 200
+
+
+GET /rooms - get list of all rooms
+Taken parameters:
+- includeForActivity - for provided activity id include its teacher
+- excludeForSlot - for provided slot exclude all teacher using it
+    Success - 200
+
+
+GET /subjects - get list of all subjects
+    Success - 200
+
+
+GET /groups - get list of all groups
+
+GET /groups/:id/activities - get list of activities for specific group
+
+
+GET /activities/:id - get a specific activity
+
+DELETE /activities/:id - delete a specific activity
+    Success - 204
+
+POST /activities - add new activity
+    Success - 201
+
+PUT /activities/:id - update a specific activity
+    Success - 200
