@@ -26,13 +26,15 @@ function ActivityForm() {
     if (state && "selectedGroup" in state)
         selectedGroup = state.selectedGroup;
 
-
-
     const getActivity = (id) => {
         fetch(`http://localhost:8081/activities/${id}`)
             .then(res => res.json())
             .then((data) => {
-                setActivity(data);
+                let activity = data;
+                setActivity(activity);
+                setSelectedRoom(activity.room);
+                setSelectedSubject(activity.subject);
+                setSelectedTeacher(activity.teacher);
             })
             .catch(console.log)
     };
@@ -75,17 +77,58 @@ function ActivityForm() {
         if (selectedRoom && selectedTeacher && selectedSubject)
             setSaveDisabled(false);
     }, [selectedRoom, selectedTeacher, selectedSubject])
-    // const newActivity = ({ activity }) => {
 
-    // }
+    const addNewActivity = (activity) => {
+        console.log(`Adding new activity: ${activity}`)
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newActivity: activity }),
+        };
+        return fetch("http://localhost:8081/activities", requestOptions)
+            .then(response => {
+                // if (response.status === 201)
+                //     return response.json();
+                console.log(response.status)
+                return response.status;
+            });
+    }
 
-    // const updateActivity = ({ id }) => {
+    const updateActivity = (id, activity) => {
+        console.log(`Updating activity: #${id} ${activity}`)
+        const requestOptions = {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ activity }),
+        };
+        return fetch(`http://localhost:8081/activities/${id}`, requestOptions)
+            .then(response => {
+                console.log(response.status)
+                return response.status;
+            });
+    }
 
-    // }
-
-    // const deleteActivity = ({ id }) => {
-
-    // }
+    const deleteActivity = (id) => {
+        console.log(`Deleting activity: #${id}`)
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+        fetch(`http://localhost:8081/activities/${id}`, requestOptions)
+            .then(response => {
+                console.log(response.status)
+                return response.status;
+            });
+    }
 
     return (
         <div>
@@ -138,8 +181,23 @@ function ActivityForm() {
                 </select>
             </div>
 
-            <button class="btn btn-primary mr-2" disabled={saveDisabled}>Save</button>
-            <button class="btn btn-secondary" disabled={activity === undefined}>Delete this activity</button>
+            <button class="btn btn-primary mr-2" onClick={() => {
+                let newActivity = {
+                    room: selectedRoom,
+                    group: selectedGroup,
+                    subject: selectedSubject,
+                    slot: selectedSlot,
+                    teacher: selectedTeacher,
+                    id: undefined
+                }
+                if (activity === undefined)
+                    addNewActivity(newActivity);
+                else {
+                    newActivity.id = activityId;
+                    updateActivity(activityId, newActivity);
+                }
+            }} disabled={saveDisabled}>Save</button>
+            <button class="btn btn-secondary" onClick={() => { deleteActivity(activityId) }} disabled={activity === undefined}>Delete this activity</button>
         </div >
     )
 }
