@@ -13,6 +13,11 @@ function ActivityForm() {
     const [subjects, setSubjects] = useState([]);
     const [teachers, setTeachers] = useState([]);
 
+    const [selectedRoom, setSelectedRoom] = useState();
+    const [selectedTeacher, setSelectedTeacher] = useState();
+    const [selectedSubject, setSelectedSubject] = useState();
+    const [saveDisabled, setSaveDisabled] = useState(true);
+
     let state = useLocation().state;
     if (state && "slot" in state)
         selectedSlot = state.slot;
@@ -20,6 +25,7 @@ function ActivityForm() {
         activityId = state.activityId;
     if (state && "selectedGroup" in state)
         selectedGroup = state.selectedGroup;
+
 
 
     const getActivity = (id) => {
@@ -65,6 +71,10 @@ function ActivityForm() {
         getSubjects();
     }, [])
 
+    useEffect(() => {
+        if (selectedRoom && selectedTeacher && selectedSubject)
+            setSaveDisabled(false);
+    }, [selectedRoom, selectedTeacher, selectedSubject])
     // const newActivity = ({ activity }) => {
 
     // }
@@ -81,7 +91,7 @@ function ActivityForm() {
         <div>
             <div class="form-group">
                 <label>Room</label>
-                <select class="form-control">
+                <select class="form-control" onChange={e => setSelectedRoom(e.target.value)}>
                     {(() => {
                         if (activity === undefined)
                             return <option disabled selected>Select room</option>
@@ -102,7 +112,7 @@ function ActivityForm() {
                     })()}
                 </select>
                 <label>Subject</label>
-                <select class="form-control">
+                <select class="form-control" onChange={e => setSelectedSubject(e.target.value)}>
                     {(() => {
                         if (activity === undefined)
                             return <option disabled selected>Select subject</option>
@@ -114,7 +124,7 @@ function ActivityForm() {
                     })}
                 </select>
                 <label>Teacher</label>
-                <select class="form-control">
+                <select class="form-control" onChange={e => setSelectedTeacher(e.target.value)}>
                     {(() => {
                         if (activity === undefined)
                             return <option disabled selected>Select teacher</option>
@@ -128,9 +138,9 @@ function ActivityForm() {
                 </select>
             </div>
 
-            <button class="btn btn-primary mr-2">Save</button>
-            <button class="btn btn-secondary">Delete this activity</button>
-        </div>
+            <button class="btn btn-primary mr-2" disabled={saveDisabled}>Save</button>
+            <button class="btn btn-secondary" disabled={activity === undefined}>Delete this activity</button>
+        </div >
     )
 }
 
