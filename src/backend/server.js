@@ -18,6 +18,7 @@ app.get('/teachers', function (req, res) {
         let activity = data.activities[activityId];
         let teachers = data.teachers.filter(
             t => (
+                (activityId === undefined && slot === undefined) ||
                 (t === (activity && activity.teacher)) ||
                 !(data.activities.filter(a => a.slot === slot).map(a => a.teacher).includes(t))
             )
@@ -27,7 +28,7 @@ app.get('/teachers', function (req, res) {
     });
 })
 
-// Delete teacher #id
+// Delete a specific teacher
 app.delete("/teachers/:id", function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`DELETE /teachers/${req.params.id} ${req.ip}`);
@@ -61,7 +62,7 @@ app.post('/teachers', function (req, res) {
     });
 })
 
-// Edit existing teacher
+// Update a specific teacher
 app.put('/teachers/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`PUT /teachers/${id} ${req.ip}`);
@@ -76,7 +77,7 @@ app.put('/teachers/:id', function (req, res) {
 })
 
 
-// Retrieves a list of rooms
+// Retrieve a list of rooms
 // Exclude rooms used in provided slot
 // Include room used in provided activity
 app.get('/rooms', function (req, res) {
@@ -98,7 +99,7 @@ app.get('/rooms', function (req, res) {
 })
 
 
-// Retrieves a list of subjects
+// Retrieve a list of subjects
 app.get('/subjects', function (req, res) {
     console.log(`GET /subjects ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
@@ -109,7 +110,7 @@ app.get('/subjects', function (req, res) {
 })
 
 
-// Retrieves a list of groups
+// Retrieve a list of groups
 app.get('/groups', function (req, res) {
     console.log(`GET /groups ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
@@ -119,21 +120,25 @@ app.get('/groups', function (req, res) {
     });
 })
 
-// Retrieves list of activities for specific group
+// Retrieve list of activities for specific group
 app.get('/groups/:id/activities', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`GET /group/${id}/activities ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, json) {
         let data = JSON.parse(json);
         let group = data.groups[id];
-        let activities = data.activities.filter(a => a.group === group);
+
+        let activities = data.activities
+            // workaround because activities doesn't contain their ids
+            .map((a, idx) => { return { idx, a } })
+            .filter(({ _, a }) => a.group === group);
         console.log(activities);
         res.send(activities);
     });
 })
 
 
-// Retrieves a specific activity
+// Retrieve a specific activity
 app.get('/activities/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`GET /activities/${id} ${req.ip}`);
@@ -141,6 +146,49 @@ app.get('/activities/:id', function (req, res) {
         let activity = JSON.parse(data).activities[id];
         console.log(activity);
         res.send(activity);
+    });
+})
+
+// Delete a specific activity
+app.delete("/activities/:id", function (req, res) {
+    let id = parseInt(req.params.id, 10);
+    console.log(`DELETE /activities/${req.params.id} ${req.ip}`);
+    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    data = JSON.parse(data)
+    data.activities.splice(id, 1);
+    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+        if (err) return console.log(err);
+        console.log(data.activities);
+        res.status(204);
+        res.send();
+    });
+})
+
+// Create a new activity
+app.post('/activities', function (req, res) {
+    console.log(`POST /activities ${req.ip}`);
+    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    data = JSON.parse(data);
+    data.activities.push(req.body.newActivity);
+    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+        if (err) return console.log(err);
+        console.log(data.activities);
+        res.status(201);
+        res.send();
+    });
+})
+
+// Update a specific activity
+app.put('/activities/:id', function (req, res) {
+    let id = parseInt(req.params.id, 10);
+    console.log(`PUT /activities/${id} ${req.ip}`);
+    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    data = JSON.parse(data);
+    data.activities[id] = req.body.activity;
+    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+        if (err) return console.log(err);
+        console.log(data.activities);
+        res.send();
     });
 })
 
