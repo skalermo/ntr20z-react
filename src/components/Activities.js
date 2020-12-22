@@ -34,9 +34,9 @@ function Activities() {
             .then(res => res.json())
             .then((data) => {
                 let labels = Array(rows * cols).fill().map((_, idx) => ({ slot: idx, activityId: undefined, label: "" }));
-                data.forEach(function (a) {
-                    labels[a.slot] = { slot: a.slot, activityId: a.id, label: [a.room, a.subject].join(" ") };
-                })
+                data.forEach(function ({ idx, a }) {
+                    labels[a.slot] = { slot: a.slot, activityId: idx, label: [a.room, a.subject].join(" ") };
+                });
                 setLabels(labels);
             })
             .catch(console.log);
