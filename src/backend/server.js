@@ -7,10 +7,22 @@ app.use(express.json());
 let fs = require("fs");
 
 // Retrieve a list of teachers
+// Exclude teachers used in provided slot
+// Include teacher used in provided activity
 app.get('/teachers', function (req, res) {
     console.log(`GET /teachers ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
-        let teachers = JSON.parse(data).teachers;
+    let activityId = parseInt(req.query.includeForActivity, 10);
+    let slot = parseInt(req.query.excludeForSlot, 10);
+    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+        let data = JSON.parse(json);
+        let activity = data.activities[activityId];
+        let teachers = data.teachers.filter(
+            t => (
+                (t === (activity && activity.teacher)) ||
+                !(data.activities.filter(a => a.slot === slot).map(a => a.teacher).includes(t))
+            )
+        );
+        console.log(teachers);
         res.send(teachers);
     });
 })
@@ -63,6 +75,40 @@ app.put('/teachers/:id', function (req, res) {
     });
 })
 
+
+// Retrieves a list of rooms
+// Exclude rooms used in provided slot
+// Include room used in provided activity
+app.get('/rooms', function (req, res) {
+    console.log(`GET /rooms ${req.ip}`);
+    let activityId = parseInt(req.query.includeForActivity, 10);
+    let slot = parseInt(req.query.excludeForSlot, 10);
+    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+        let data = JSON.parse(json);
+        let activity = data.activities[activityId];
+        let rooms = data.rooms.filter(
+            r => (
+                (r === (activity && activity.room)) ||
+                !(data.activities.filter(a => a.slot === slot).map(a => a.room).includes(r))
+            )
+        )
+        console.log(rooms);
+        res.send(rooms);
+    });
+})
+
+
+// Retrieves a list of subjects
+app.get('/subjects', function (req, res) {
+    console.log(`GET /subjects ${req.ip}`);
+    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
+        let subjects = JSON.parse(data).subjects;
+        console.log(subjects);
+        res.send(subjects);
+    });
+})
+
+
 // Retrieves a list of groups
 app.get('/groups', function (req, res) {
     console.log(`GET /groups ${req.ip}`);
@@ -86,6 +132,7 @@ app.get('/groups/:id/activities', function (req, res) {
     });
 })
 
+
 // Retrieves a specific activity
 app.get('/activities/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
@@ -96,6 +143,7 @@ app.get('/activities/:id', function (req, res) {
         res.send(activity);
     });
 })
+
 
 var server = app.listen(8081, function () {
     var host = server.address().address
