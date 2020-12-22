@@ -38,16 +38,14 @@
       "group": "1a",
       "subject": "mat",
       "slot": 1,
-      "teacher": "kowalski",
-      "id": 0
+      "teacher": "kowalski"
     },
     {
       "room": "121",
       "group": "1c",
       "subject": "eng",
       "slot": 3,
-      "teacher": "nowak",
-      "id": 1
+      "teacher": "nowak"
     }
   ]
 }
