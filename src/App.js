@@ -1,10 +1,10 @@
-
 import React, { Component } from "react";
 import { Link, Route, Switch } from "react-router-dom";
 import Home from "./components/Home";
 import Teachers from "./components/Teachers";
 import TeacherForm from "./components/TeacherForm";
 import Activities from "./components/Activities";
+import ActivityForm from "./components/ActivityForm";
 
 const Header = () => {
   return (
@@ -43,6 +43,7 @@ class App extends Component {
               <Route path="/teachers"><Teachers /></Route>
               <Route path="/teacherForm"><TeacherForm /></Route>
               <Route path="/activities"><Activities /></Route>
+              <Route path="/activityForm"><ActivityForm /></Route>
               <Route path="/:id">
                 <p>This text will render for any route other than those defined above</p>
               </Route>
