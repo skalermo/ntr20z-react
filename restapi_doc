@@ -6,12 +6,16 @@ Taken parameters:
 
 DELETE /teachers/:id - delete a specific teacher
     Success - 204
+    Bad param - 400 - provided id is bad
+    Not allowed - 405 - cannot delete teacher (used in activity)
 
 POST /teachers - add new teacher
     Success - 201
 
 PUT /teachers/:id - update a specific teacher
     Success - 200
+    Bad param - 400 - provided id is bad
+    Not allowed - 405 - cannot update teacher (used in activity)
 
 
 GET /rooms - get list of all rooms
@@ -28,15 +32,21 @@ GET /subjects - get list of all subjects
 GET /groups - get list of all groups
 
 GET /groups/:id/activities - get list of activities for specific group
+    Success - 200
+    Bad param - 400 - provided id is bad 
 
 
 GET /activities/:id - get a specific activity
+    Success - 200
+    Bad param - 400 - provided id is bad 
 
 DELETE /activities/:id - delete a specific activity
     Success - 204
+    Bad param - 400 - provided id is bad 
 
 POST /activities - add new activity
     Success - 201
 
 PUT /activities/:id - update a specific activity
     Success - 200
+    Bad param - 400 - provided id is bad 
