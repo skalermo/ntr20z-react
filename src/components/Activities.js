@@ -33,9 +33,9 @@ function Activities() {
         fetch(`http://localhost:8081/groups/${selectedGroupIdx}/activities`)
             .then(res => res.json())
             .then((data) => {
-                let labels = Array.apply([-1, ""], Array(rows * cols));
-                data.forEach(function (item) {
-                    labels[item.slot] = [item.slot, [item.room, item.subject].join(" ")];
+                let labels = Array(rows * cols).fill().map((_, idx) => ({ slot: idx, activityId: undefined, label: "" }));
+                data.forEach(function (a) {
+                    labels[a.slot] = { slot: a.slot, activityId: a.id, label: [a.room, a.subject].join(" ") };
                 })
                 setLabels(labels);
             })
@@ -86,23 +86,24 @@ function Activities() {
                                 )
                             })}
 
-                            {labels.map(function (x, i) {
+                            {labels && labels.map(function ({ slot, activityId, label }, i) {
                                 // console.log(i);
                                 return (() => {
                                     if (i % cols == 0)
                                         return (
                                             <>
-                                                {/* <Link class="fill-div slot" to={{
-                                        pathname: "/activityForm",
-                                        state: { idx }
-                                    }}>Edit</Link> */}
-
                                                 <div class="slot index">{activitiesTimes[i / cols]}</div>
-                                                <Link class="fill-div slot" to="/activityForm">{x}</Link>
+                                                <Link class="fill-div slot" to={{
+                                                    pathname: "/activityForm",
+                                                    state: { slot, activityId, selectedGroup: groups[selectedGroupIdx] }
+                                                }}>{label}</Link>
                                             </>
                                         )
                                     return (
-                                        <Link class="fill-div slot" to="/activityForm">{x}</Link>
+                                        <Link class="fill-div slot" to={{
+                                            pathname: "/activityForm",
+                                            state: { slot, activityId, selectedGroup: groups[selectedGroupIdx] }
+                                        }}>{label}</Link>
                                     )
                                 })();
                             })}
