@@ -1,60 +1,10 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-class Teachers extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            teachers: [],
-        }
-    }
+function Teachers() {
+    const [teachers, setTeachers] = useState([]);
 
-    render() {
-        console.log(this.state.teachers)
-        return (
-            <div>
-                < h2 >
-                    Teachers
-                </h2 >
-                <Link class="btn btn-link" to="/teacherForm">Add new teacher</Link>
-
-                <table class="table table-hover">
-                    <tr>
-                        <th>
-                            Teacher
-                                </th>
-                        <th>
-                            Actions
-                                </th>
-                    </tr>
-                    {this.state.teachers.map((teacher, idx) => {
-                        return this.renderTeacherEntry(idx, teacher);
-                    })}
-                </table>
-            </div >
-        );
-    }
-
-    renderTeacherEntry(idx, name) {
-        console.log(name);
-        return (
-            < tr >
-                <td>
-                    {name}
-                </td>
-                <td>
-                    <Link class="btn btn-link" to={{
-                        pathname: "/teacherForm",
-                        state: { idx, name }
-                    }}>Edit</Link>
-                    {/* <button name="editButton" value={idx} class="btn btn-link">Edit</button> */}
-                    <button onClick={() => { this.deleteTeacher(idx) }} name="deleteButton" value={idx} class="btn btn-link">Delete</button>
-                </td>
-            </tr>
-        );
-    }
-
-    deleteTeacher(id) {
+    const deleteTeacher = (id) => {
         console.log("Deleting teacher: id=" + id)
         const requestOptions = {
             method: "DELETE",
@@ -66,24 +16,65 @@ class Teachers extends Component {
         fetch(`http://localhost:8081/teachers/${id}`, requestOptions)
             .then(response => {
                 if (response.status === 204)
-                    this.setState((state) => (state.teachers.splice(id, 1)))
+                    fetchTeachers();
             })
             .catch(console.log)
     }
 
-    fetchTeachers() {
+    const fetchTeachers = () => {
         fetch("http://localhost:8081/teachers")
             .then(res => res.json())
             .then((data) => {
-                this.setState({ teachers: data })
+                setTeachers(data)
             })
             .catch(console.log)
     }
 
-    componentDidMount() {
-        this.fetchTeachers();
-        this.timer = setInterval(() => this.fetchTeachers(), 10_000);
+    useEffect(() => {
+        fetchTeachers();
+        setInterval(() => fetchTeachers(), 10_000);
+    }, []);
+
+    const TeacherEntry = ({ idx, name }) => {
+        return (
+            < tr >
+                <td>
+                    {name}
+                </td>
+                <td>
+                    <Link class="btn btn-link" to={{
+                        pathname: "/teacherForm",
+                        state: { idx, name }
+                    }}>Edit</Link>
+                    <button onClick={() => { deleteTeacher(idx) }} name="deleteButton" value={idx} class="btn btn-link">Delete</button>
+                </td>
+            </tr>
+        );
     }
+
+    return (
+        <div>
+            < h2 >
+                Teachers
+                </h2 >
+            <Link class="btn btn-link" to="/teacherForm">Add new teacher</Link>
+
+            <table class="table table-hover">
+                <tr>
+                    <th>
+                        Teacher
+                                </th>
+                    <th>
+                        Actions
+                                </th>
+                </tr>
+                {teachers.map((teacher, idx) => {
+                    return <TeacherEntry idx={idx} name={teacher} />;
+                })}
+            </table>
+        </div >
+    );
+
 }
 
 export default Teachers;
