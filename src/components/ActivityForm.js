@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import Alert from "./BasicAlert";
 
 function ActivityForm() {
     // 3 props may be passed:
@@ -17,6 +18,13 @@ function ActivityForm() {
     const [selectedTeacher, setSelectedTeacher] = useState();
     const [selectedSubject, setSelectedSubject] = useState();
     const [saveDisabled, setSaveDisabled] = useState(true);
+
+    const [hideAlert, setHideAlert] = useState(true);
+    const [alertType, setAlertType] = useState();
+    const [alertMsg, setAlertMsg] = useState("");
+    useEffect(() => {
+        setTimeout(() => { setHideAlert(true) }, 5_000);
+    }, []);
 
     let state = useLocation().state;
     if (state && "slot" in state)
@@ -89,11 +97,14 @@ function ActivityForm() {
             body: JSON.stringify({ newActivity: activity }),
         };
         return fetch("http://localhost:8081/activities", requestOptions)
-            .then(response => {
-                // if (response.status === 201)
-                //     return response.json();
-                console.log(response.status)
-                return response.status;
+            .then(res => {
+                console.log(res.status)
+                if (res.status === 201)
+                    setAlertType("success");
+                else
+                    setAlertType("danger");
+                setAlertMsg(res.statusText);
+                setHideAlert(false);
             });
     }
 
@@ -108,9 +119,14 @@ function ActivityForm() {
             body: JSON.stringify({ activity }),
         };
         return fetch(`http://localhost:8081/activities/${id}`, requestOptions)
-            .then(response => {
-                console.log(response.status)
-                return response.status;
+            .then(res => {
+                console.log(res.status)
+                if (res.status === 200)
+                    setAlertType("success");
+                else
+                    setAlertType("danger");
+                setAlertMsg(res.statusText);
+                setHideAlert(false);
             });
     }
 
@@ -124,14 +140,21 @@ function ActivityForm() {
             },
         }
         fetch(`http://localhost:8081/activities/${id}`, requestOptions)
-            .then(response => {
-                console.log(response.status)
-                return response.status;
+            .then(res => {
+                console.log(res.status)
+                if (res.status === 204)
+                    setAlertType("success");
+                else
+                    setAlertType("danger");
+                setAlertMsg(res.statusText);
+                setHideAlert(false);
             });
     }
 
     return (
         <div>
+            <Link class="btn btn-link" to="/activities">Back to activities</Link>
+            <Alert hide={hideAlert} type={alertType} msg={alertMsg} />
             <div class="form-group">
                 <label>Room</label>
                 <select class="form-control" onChange={e => setSelectedRoom(e.target.value)}>
