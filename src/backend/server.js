@@ -24,7 +24,7 @@ app.get('/teachers', function (req, res) {
             )
         );
         console.log(teachers);
-        res.send(teachers);
+        res.status(200).send(teachers);
     });
 })
 
@@ -35,16 +35,23 @@ app.delete("/teachers/:id", function (req, res) {
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data)
 
-    // if (id < 0 || id >= length(data.teachers)) {
-    //     res.status(204);
-    //     res.send();
-    // }
+    // check if provided id is not bad
+    if (id < 0 || id >= data.teachers.length) {
+        res.status(400).send({ message: "Teacher you are trying to delete doesn't exist." });
+        return;
+    }
+
+    // check if the teacher is used in activity
+    if (data.activities.map(a => a.teacher).includes(data.teachers[id])) {
+        res.status(405).send({ message: "Teacher you are trying to delete is used in an activity." })
+        return;
+    }
+
     data.teachers.splice(id, 1);
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
-        res.status(204);
-        res.send();
+        res.status(204).send();
     });
 })
 
@@ -55,10 +62,8 @@ app.post('/teachers', function (req, res) {
     data = JSON.parse(data);
     data.teachers.push(req.body.newTeacher);
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
-        if (err) return console.log(err);
         console.log(data.teachers);
-        res.status(201);
-        res.send();
+        res.status(201).send();
     });
 })
 
@@ -68,11 +73,24 @@ app.put('/teachers/:id', function (req, res) {
     console.log(`PUT /teachers/${id} ${req.ip}`);
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data);
+
+    // check if provided id is not bad
+    if (id < 0 || id >= data.teachers.length) {
+        res.status(400).send({ message: "Teacher you are trying to update doesn't exist." });
+        return;
+    }
+
+    // check if the teacher is used in activity
+    if (data.activities.map(a => a.teacher).includes(data.teachers[id])) {
+        res.status(405).send({ message: "Teacher you are trying to update is used in an activity." })
+        return;
+    }
+
     data.teachers[id] = req.body.teacher;
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
-        res.send();
+        res.status(200).send();
     });
 })
 
@@ -94,7 +112,7 @@ app.get('/rooms', function (req, res) {
             )
         )
         console.log(rooms);
-        res.send(rooms);
+        res.status(200).send(rooms);
     });
 })
 
@@ -105,7 +123,7 @@ app.get('/subjects', function (req, res) {
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
         let subjects = JSON.parse(data).subjects;
         console.log(subjects);
-        res.send(subjects);
+        res.status(200).send(subjects);
     });
 })
 
@@ -116,7 +134,7 @@ app.get('/groups', function (req, res) {
     fs.readFile(__dirname + "/" + "data.json", function (err, data) {
         let groups = JSON.parse(data).groups;
         console.log(groups);
-        res.send(groups);
+        res.status(200).send(groups);
     });
 })
 
@@ -126,6 +144,13 @@ app.get('/groups/:id/activities', function (req, res) {
     console.log(`GET /group/${id}/activities ${req.ip}`);
     fs.readFile(__dirname + "/" + "data.json", function (err, json) {
         let data = JSON.parse(json);
+
+        // check if provided id is not bad
+        if (id < 0 || id >= data.groups.length) {
+            res.status(400).send({ message: "Group which you have selected doesn't exist." });
+            return;
+        }
+
         let group = data.groups[id];
 
         let activities = data.activities
@@ -133,7 +158,7 @@ app.get('/groups/:id/activities', function (req, res) {
             .map((a, idx) => { return { idx, a } })
             .filter(({ _, a }) => a.group === group);
         console.log(activities);
-        res.send(activities);
+        res.status(200).send(activities);
     });
 })
 
@@ -142,10 +167,18 @@ app.get('/groups/:id/activities', function (req, res) {
 app.get('/activities/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`GET /activities/${id} ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
-        let activity = JSON.parse(data).activities[id];
+    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+        let data = JSON.parse(json);
+
+        // check if provided id is not bad
+        if (id < 0 || id >= data.activities.length) {
+            res.status(400).send({ message: "Activity you are trying to get doesn't exist." });
+            return;
+        }
+
+        let activity = data.activities[id];
         console.log(activity);
-        res.send(activity);
+        res.status(200).send(activity);
     });
 })
 
@@ -155,12 +188,18 @@ app.delete("/activities/:id", function (req, res) {
     console.log(`DELETE /activities/${req.params.id} ${req.ip}`);
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data)
+
+    // check if provided id is not bad
+    if (id < 0 || id >= data.activities.length) {
+        res.status(400).send({ message: "Activity you are trying to delete doesn't exist." });
+        return;
+    }
+
     data.activities.splice(id, 1);
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
-        res.status(204);
-        res.send();
+        res.status(204).send();
     });
 })
 
@@ -173,8 +212,7 @@ app.post('/activities', function (req, res) {
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
-        res.status(201);
-        res.send();
+        res.status(201).send();
     });
 })
 
@@ -184,11 +222,19 @@ app.put('/activities/:id', function (req, res) {
     console.log(`PUT /activities/${id} ${req.ip}`);
     let data = fs.readFileSync(__dirname + "/" + "data.json");
     data = JSON.parse(data);
+
+
+    // check if provided id is not bad
+    if (id < 0 || id >= data.activities.length) {
+        res.status(400).send({ message: "Activity you are trying to update doesn't exist." });
+        return;
+    }
+
     data.activities[id] = req.body.activity;
     fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
-        res.send();
+        res.status(200).send();
     });
 })
 
@@ -198,3 +244,7 @@ var server = app.listen(8081, function () {
     var port = server.address().port
     console.log("Example app listening at http://%s:%s", host, port)
 })
+
+// todo move error messages to server
+// handle error codes
+// front: use alerts
