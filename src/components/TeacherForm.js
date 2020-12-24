@@ -1,61 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-
-function Alert({ hide, type }) {
-    if (hide) return null;
-    switch (type) {
-        case "create success":
-            return (
-                <div class="alert alert-success">
-                    Successfully added new teacher.
-                </div>
-            );
-        case "edit success":
-            return (
-                <div class="alert alert-success">
-                    Successfully edited teacher.
-                </div>
-            );
-        default:
-            return null;
-    }
-}
-
-function addNewTeacher(teacher) {
-    console.log(`Adding new teacher: ${teacher}`)
-    const requestOptions = {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ newTeacher: teacher }),
-    };
-    return fetch("http://localhost:8081/teachers", requestOptions)
-        .then(response => {
-            // if (response.status === 201)
-            //     return response.json();
-            console.log(response.status)
-            return response.status;
-        });
-}
-
-function editTeacher(id, teacher) {
-    console.log(`Editing teacher: #${id} ${teacher}`)
-    const requestOptions = {
-        method: "PUT",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ teacher }),
-    };
-    return fetch(`http://localhost:8081/teachers/${id}`, requestOptions)
-        .then(response => {
-            console.log(response.status)
-            return response.status;
-        });
-}
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import Alert from './BasicAlert';
 
 function TeacherForm() {
     let idx, name;
@@ -68,41 +13,72 @@ function TeacherForm() {
     const [input, setInput] = useState(() => { if (typeof name !== "undefined") return name; return '' });
     const [hideAlert, setHideAlert] = useState(true);
     const [alertType, setAlertType] = useState();
+    const [alertMsg, setAlertMsg] = useState("");
+    useEffect(() => {
+        setTimeout(() => { setHideAlert(true) }, 5_000);
+    }, []);
 
-    let alertTimer = setTimeout(() => { setHideAlert(true) }, 5_000);
+    const addNewTeacher = (teacher) => {
+        console.log(`Adding new teacher: ${teacher}`)
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newTeacher: teacher }),
+        };
+        return fetch("http://localhost:8081/teachers", requestOptions)
+            .then(res => {
+                console.log(res.status)
+                if (res.status === 201) {
+                    setAlertType("success");
+                } else {
+                    setAlertType("danger");
+                }
+                setHideAlert(false);
+                setAlertMsg(res.statusText);
+            })
+    }
+
+    const updateTeacher = (id, teacher) => {
+        console.log(`Updating teacher: #${id} ${teacher}`)
+        const requestOptions = {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ teacher }),
+        };
+        return fetch(`http://localhost:8081/teachers/${id}`, requestOptions)
+            .then(res => {
+                console.log(res.status)
+                if (res.status === 200) {
+                    setAlertType("success");
+                } else {
+                    setAlertType("danger");
+                }
+                setHideAlert(false);
+                setAlertMsg(res.statusText);
+            });
+    }
+
     return (
         <div>
             <h2>Teacher Form</h2>
             <Link class="btn btn-link" to="/teachers">Back to teachers list</Link>
-            <Alert hide={hideAlert} type={alertType} />
+            <Alert hide={hideAlert} type={alertType} msg={alertMsg} />
             <input type="hidden" value={idx} />
             <div class="form-group">
                 <label>Teacher</label>
                 <input type="text" class="form-control" placeholder="John Smith" value={input} onInput={e => setInput(e.target.value)} />
             </div>
             <button type="submit" onClick={() => {
-                if (typeof idx === 'undefined') {
-                    let status = addNewTeacher(input);
-                    status.then(status => {
-                        console.log(status);
-                        if (status === 201) {
-                            setInput('');
-                            setHideAlert(false);
-                            setAlertType("create success");
-                        }
-                    });
-                }
-                else {
-                    let status = editTeacher(idx, input);
-                    status.then(status => {
-                        console.log(status);
-                        if (status === 200) {
-                            setInput('');
-                            setHideAlert(false);
-                            setAlertType("edit success");
-                        }
-                    })
-                }
+                if (typeof idx === 'undefined')
+                    addNewTeacher(input);
+                else
+                    updateTeacher(idx, input);
             }} class="btn btn-primary">Submit</button>
         </div>
     )

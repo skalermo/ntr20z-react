@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Alert from "./BasicAlert";
 
 function Teachers() {
     const [teachers, setTeachers] = useState([]);
+    const [hideAlert, setHideAlert] = useState(true);
+    const [alertType, setAlertType] = useState();
+    const [alertMsg, setAlertMsg] = useState("");
+    useEffect(() => {
+        setTimeout(() => { setHideAlert(true) }, 5_000);
+    }, []);
 
     const deleteTeacher = (id) => {
         console.log("Deleting teacher: id=" + id)
@@ -14,9 +21,15 @@ function Teachers() {
             },
         }
         fetch(`http://localhost:8081/teachers/${id}`, requestOptions)
-            .then(response => {
-                if (response.status === 204)
+            .then(res => {
+                if (res.status === 204) {
                     fetchTeachers();
+                    setAlertType("success");
+                } else {
+                    setAlertType("danger");
+                }
+                setHideAlert(false);
+                setAlertMsg(res.statusText);
             })
             .catch(console.log)
     }
@@ -57,6 +70,7 @@ function Teachers() {
             < h2 >
                 Teachers
                 </h2 >
+            <Alert hide={hideAlert} type={alertType} msg={alertMsg} />
             <Link class="btn btn-link" to="/teacherForm">Add new teacher</Link>
 
             <table class="table table-hover">
