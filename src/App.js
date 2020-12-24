@@ -44,8 +44,8 @@ class App extends Component {
               <Route path="/teacherForm"><TeacherForm /></Route>
               <Route path="/activities"><Activities /></Route>
               <Route path="/activityForm"><ActivityForm /></Route>
-              <Route path="/:id">
-                <p>This text will render for any route other than those defined above</p>
+              <Route path="/">
+                <p>404 - Check your url please</p>
               </Route>
             </Switch>
           </main>
