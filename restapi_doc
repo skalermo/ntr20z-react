@@ -1,0 +1,59 @@
+    OK - 200
+    Created - 201
+    No content - 204 - no response body
+    Bad request - 400 (bad provided param)
+    Not allowed - 405 (request cannot be fulfilled)
+
+GET /teachers - get list of all teachers
+Taken parameters:
+- includeForActivity - for provided activity id include its teacher
+- excludeForSlot - for provided slot exclude all teacher using it
+    OK - 200
+
+DELETE /teachers/:id - delete a specific teacher
+    OK - 204
+    Bad request - 400 - provided id is bad
+    Not allowed - 405 - cannot delete teacher (used in activity)
+
+POST /teachers - add new teacher
+    OK - 201
+
+PUT /teachers/:id - update a specific teacher
+    OK - 200
+    Bad request - 400 - provided id is bad
+    Not allowed - 405 - cannot update teacher (used in activity)
+
+
+GET /rooms - get list of all rooms
+Taken parameters:
+- includeForActivity - for provided activity id include its teacher
+- excludeForSlot - for provided slot exclude all teacher using it
+    OK - 200
+
+
+GET /subjects - get list of all subjects
+    OK - 200
+
+
+GET /groups - get list of all groups
+    OK - 200
+
+GET /groups/:id/activities - get list of activities for specific group
+    OK - 200
+    Bad request - 400 - provided id is bad 
+
+
+GET /activities/:id - get a specific activity
+    OK - 200
+    Bad request - 400 - provided id is bad 
+
+DELETE /activities/:id - delete a specific activity
+    OK - 204
+    Bad request - 400 - provided id is bad 
+
+POST /activities - add new activity
+    OK - 201
+
+PUT /activities/:id - update a specific activity
+    OK - 200
+    Bad request - 400 - provided id is bad 
