@@ -1,4 +1,5 @@
 let express = require('express');
+let path = require('path');
 let app = express();
 
 // To be able to parse req.body
@@ -13,7 +14,7 @@ app.get('/teachers', function (req, res) {
     console.log(`GET /teachers ${req.ip}`);
     let activityId = parseInt(req.query.includeForActivity, 10);
     let slot = parseInt(req.query.excludeForSlot, 10);
-    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, json) {
         let data = JSON.parse(json);
         let activity = data.activities[activityId];
         let teachers = data.teachers.filter(
@@ -32,7 +33,7 @@ app.get('/teachers', function (req, res) {
 app.delete("/teachers/:id", function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`DELETE /teachers/${req.params.id} ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data)
 
     // check if provided id is not bad
@@ -48,7 +49,7 @@ app.delete("/teachers/:id", function (req, res) {
     }
 
     data.teachers.splice(id, 1);
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
         res.status(204).send();
@@ -58,10 +59,10 @@ app.delete("/teachers/:id", function (req, res) {
 // Create a new teacher
 app.post('/teachers', function (req, res) {
     console.log(`POST /teachers ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data);
     data.teachers.push(req.body.newTeacher);
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         console.log(data.teachers);
         res.status(201).send();
     });
@@ -71,7 +72,7 @@ app.post('/teachers', function (req, res) {
 app.put('/teachers/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`PUT /teachers/${id} ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data);
 
     // check if provided id is not bad
@@ -87,7 +88,7 @@ app.put('/teachers/:id', function (req, res) {
     }
 
     data.teachers[id] = req.body.teacher;
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.teachers);
         res.status(200).send();
@@ -102,7 +103,7 @@ app.get('/rooms', function (req, res) {
     console.log(`GET /rooms ${req.ip}`);
     let activityId = parseInt(req.query.includeForActivity, 10);
     let slot = parseInt(req.query.excludeForSlot, 10);
-    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, json) {
         let data = JSON.parse(json);
         let activity = data.activities[activityId];
         let rooms = data.rooms.filter(
@@ -120,7 +121,7 @@ app.get('/rooms', function (req, res) {
 // Retrieve a list of subjects
 app.get('/subjects', function (req, res) {
     console.log(`GET /subjects ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, data) {
         let subjects = JSON.parse(data).subjects;
         console.log(subjects);
         res.status(200).send(subjects);
@@ -131,7 +132,7 @@ app.get('/subjects', function (req, res) {
 // Retrieve a list of groups
 app.get('/groups', function (req, res) {
     console.log(`GET /groups ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, data) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, data) {
         let groups = JSON.parse(data).groups;
         console.log(groups);
         res.status(200).send(groups);
@@ -142,7 +143,7 @@ app.get('/groups', function (req, res) {
 app.get('/groups/:id/activities', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`GET /group/${id}/activities ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, json) {
         let data = JSON.parse(json);
 
         // check if provided id is not bad
@@ -167,7 +168,7 @@ app.get('/groups/:id/activities', function (req, res) {
 app.get('/activities/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`GET /activities/${id} ${req.ip}`);
-    fs.readFile(__dirname + "/" + "data.json", function (err, json) {
+    fs.readFile(path.join(__dirname, "data.json"), function (err, json) {
         let data = JSON.parse(json);
 
         // check if provided id is not bad
@@ -186,7 +187,7 @@ app.get('/activities/:id', function (req, res) {
 app.delete("/activities/:id", function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`DELETE /activities/${req.params.id} ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data)
 
     // check if provided id is not bad
@@ -196,7 +197,7 @@ app.delete("/activities/:id", function (req, res) {
     }
 
     data.activities.splice(id, 1);
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
         res.status(204).send();
@@ -206,10 +207,10 @@ app.delete("/activities/:id", function (req, res) {
 // Create a new activity
 app.post('/activities', function (req, res) {
     console.log(`POST /activities ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data);
     data.activities.push(req.body.newActivity);
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
         res.status(201).send();
@@ -220,7 +221,7 @@ app.post('/activities', function (req, res) {
 app.put('/activities/:id', function (req, res) {
     let id = parseInt(req.params.id, 10);
     console.log(`PUT /activities/${id} ${req.ip}`);
-    let data = fs.readFileSync(__dirname + "/" + "data.json");
+    let data = fs.readFileSync(path.join(__dirname, "data.json"));
     data = JSON.parse(data);
 
 
@@ -231,7 +232,7 @@ app.put('/activities/:id', function (req, res) {
     }
 
     data.activities[id] = req.body.activity;
-    fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data, null, 2), function writeJSON(err) {
+    fs.writeFile(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2), function writeJSON(err) {
         if (err) return console.log(err);
         console.log(data.activities);
         res.status(200).send();
@@ -244,7 +245,3 @@ var server = app.listen(8081, function () {
     var port = server.address().port
     console.log("Example app listening at http://%s:%s", host, port)
 })
-
-// todo move error messages to server
-// handle error codes
-// front: use alerts
