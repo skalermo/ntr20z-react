@@ -8,10 +8,10 @@ app.use(express.json());
 let fs = require("fs");
 
 // Use production version 
-// app.use(express.static(__dirname + '/build'));
-// app.get('/', function (req, res) {
-// res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// })
+app.use(express.static(__dirname + '/build'));
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+})
 
 // Retrieve a list of teachers
 // Exclude teachers used in provided slot
