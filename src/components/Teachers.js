@@ -45,7 +45,7 @@ function Teachers() {
 
     useEffect(() => {
         fetchTeachers();
-        setInterval(() => fetchTeachers(), 10_000);
+        // setInterval(() => fetchTeachers(), 10_000);
     }, []);
 
     const TeacherEntry = ({ idx, name }) => {
