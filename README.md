@@ -1,6 +1,7 @@
 # ntr20z-react
 
-Application for scheduling school activities. For backend and frontend Node.js and React used respectively. 
+Application for scheduling school activities. For backend and frontend Node.js and React used respectively.  
+I have also made [application](https://github.com/skalermo/ntr20z-mvc) with similar functionality using ASP.NET (Razor Pages) MVC.
 
 ## Installation
 Use package manager [npm](https://www.npmjs.com/get-npm) to install dependencies.
