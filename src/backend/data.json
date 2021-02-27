@@ -24,28 +24,81 @@
     "biol"
   ],
   "teachers": [
-    "kowalski",
-    "nowak",
-    "smith",
-    "clarkson",
-    "may",
-    "hammond",
-    "atkinson"
+    "Judith Hibbert",
+    "Keira Bryant",
+    "Skylah Mackay",
+    "Manon Ritter",
+    "Jimmy Kirk",
+    "Edmund Weir",
+    "Danial Jaramillo",
+    "Belle Vasquez",
+    "Linzi Garrett",
+    "Ieuan Benjamin"
   ],
   "activities": [
-    {
-      "room": "110",
-      "group": "1a",
-      "subject": "mat",
-      "slot": 1,
-      "teacher": "kowalski"
-    },
     {
       "room": "121",
       "group": "1c",
       "subject": "eng",
       "slot": 3,
-      "teacher": "nowak"
+      "teacher": "Judith Hibbert"
+    },
+    {
+      "room": "110",
+      "group": "1a",
+      "subject": "mat",
+      "slot": 0,
+      "teacher": "Keira Bryant"
+    },
+    {
+      "room": "111",
+      "group": "4a",
+      "subject": "mat",
+      "slot": 8,
+      "teacher": "Keira Bryant"
+    },
+    {
+      "room": "111",
+      "group": "1a",
+      "subject": "phys",
+      "slot": 7,
+      "teacher": "Keira Bryant"
+    },
+    {
+      "room": "111",
+      "group": "1a",
+      "subject": "mat",
+      "slot": 7,
+      "teacher": "Keira Bryant"
+    },
+    {
+      "room": "121",
+      "group": "1a",
+      "subject": "eng",
+      "slot": 16,
+      "teacher": "Edmund Weir",
+      "id": 5
+    },
+    {
+      "room": "120",
+      "group": "1a",
+      "subject": "mat",
+      "slot": 28,
+      "teacher": "Judith Hibbert"
+    },
+    {
+      "room": "120",
+      "group": "1a",
+      "subject": "mat",
+      "slot": 30,
+      "teacher": "Judith Hibbert"
+    },
+    {
+      "room": "120",
+      "group": "1a",
+      "subject": "eng",
+      "slot": 32,
+      "teacher": "Keira Bryant"
     }
   ]
 }
